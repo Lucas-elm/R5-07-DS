@@ -1,0 +1,30 @@
+name: Q4 - Archive Q4.java avec date
+
+on: [push]
+
+permissions:
+  contents: write
+
+jobs:
+  archive-q4:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Récupération du dépôt
+        uses: actions/checkout@v4
+
+      - name: Création de Q4_archive_date.txt
+        run: |
+          DATE=$(date +%d-%m-%Y)
+          FICHIER="Q4_archive_${DATE}.txt"
+          echo "Nom et Prénom : Lucas Elmaknassi" > "$FICHIER"
+          echo "--- Contenu de Q4.java ---" >> "$FICHIER"
+          cat Q4.java >> "$FICHIER"
+
+      - name: Commit et push
+        run: |
+          git config --global user.name "Lucas-elm"
+          git config --global user.email "lucaselmaknassi@gmail.com"
+          git add Q4_archive_*.txt
+          git diff --staged --quiet || git commit -m "Q4 : création de Q4_archive_date.txt"
+          git pull --rebase
+          git push
