@@ -20,5 +20,4 @@ jobs:
           git config --global user.name "Lucas-elm"
           git config --global user.email "lucaselmaknassi@gmail.com"
           git add Q1_archive_XYZ.txt
-          git diff --staged --quiet || git commit -m "Q1 : création de Q1_archive_XYZ.txt"
-          git push
+          git diff --staged --quiet || (git commit -m "Q1 : création de Q1_archive_XYZ.txt" && git pull --rebase && git push)
