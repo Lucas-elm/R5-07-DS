@@ -1,0 +1,30 @@
+name: Q5 - Archive Q5.java avec date
+
+on: [push]
+
+permissions:
+  contents: write
+
+jobs:
+  archive-q5:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Récupération du dépôt
+        uses: actions/checkout@v4
+
+      - name: Création de Q5_archive_date.txt
+        run: |
+          DATE=$(date +%d-%m-%Y)
+          FICHIER="Q5_archive_${DATE}.txt"
+          echo "Nom et Prénom : Lucas Elmaknassi" > "$FICHIER"
+          echo "--- Contenu de Q5.java ---" >> "$FICHIER"
+          cat Q5.java >> "$FICHIER"
+
+      - name: Commit et push
+        run: |
+          git config --global user.name "Lucas-elm"
+          git config --global user.email "lucaselmaknassi@gmail.com"
+          git add Q5_archive_*.txt
+          git diff --staged --quiet || git commit -m "Q5 : mise à jour de Q5_archive_date.txt"
+          git pull --rebase
+          git push
