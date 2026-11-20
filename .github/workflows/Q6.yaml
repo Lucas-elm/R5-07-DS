@@ -1,0 +1,38 @@
+name: Q6 - Archive Q6.java et différences
+
+on: [push]
+
+permissions:
+  contents: write
+
+jobs:
+  archive-q6:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Récupération du dépôt
+        uses: actions/checkout@v4
+
+      - name: Création de Q6_archive_date.txt et Q6_différences.txt
+        run: |
+          PREV=$(ls -1 Q6_archive_*.txt 2>/dev/null | sort | tail -n 1)
+          DATE=$(date +%d-%m-%Y-%H%M%S)
+          FICHIER="Q6_archive_${DATE}.txt"
+
+          echo "Nom et Prénom : Lucas Elmaknassi" > "$FICHIER"
+          echo "--- Taille de Q6.java (lignes et caractères) ---" >> "$FICHIER"
+          wc -l -m Q6.java >> "$FICHIER"
+          echo "--- Contenu de Q6.java ---" >> "$FICHIER"
+          cat Q6.java >> "$FICHIER"
+
+          if [ -n "$PREV" ]; then
+            diff "$PREV" "$FICHIER" > "Q6_différences.txt" || true
+          else
+            echo "Aucun fichier Q6_archive précédent pour comparer." > "Q6_différences.txt"
+          fi
+
+      - name: Commit et push
+        run: |
+          git config --global user.name "Lucas-elm"
+          git config --global user.email "lucaselmaknassi@gmail.com"
+          git add Q6_archive_*.txt "Q6_différences.txt"
+          git diff --staged --quiet || (git commit -m "Q6 : création archive et différences" && git pull --rebase && git push)
